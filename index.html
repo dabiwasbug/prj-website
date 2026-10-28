@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MAISON AURA | Bản Chạy Thử Trực Tiếp (Live Interactive Product)</title>
+    <!-- Google Fonts: Cormorant Garamond & Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5.3 CSS & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="style.css" rel="stylesheet" />
+</head>
+<body>
+
+    <!-- THANH CÔNG CỤ KIỂM THỬ ĐỒ ÁN (SIMULATOR BAR) -->
+    <div class="bg-dark text-white py-2 px-3 border-bottom border-secondary sticky-top" style="z-index: 1060;">
+        <div class="container-fluid d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-gold text-dark fw-bold">CHẾ ĐỘ CHẤM ĐỒ ÁN</span>
+                <span class="small text-light d-none d-md-inline">Kiểm thử Phân quyền (B5, B6) & Responsive (A4):</span>
+            </div>
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <!-- Chuyển đổi Role để test phân quyền Server-side -->
+                <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn btn-outline-light active" id="role-customer-btn" onclick="switchRole('Customer')">
+                        <i class="bi bi-person"></i> Khách VIP (Customer)
+                    </button>
+                    <button type="button" class="btn btn-outline-warning" id="role-admin-btn" onclick="switchRole('Admin')">
+                        <i class="bi bi-shield-lock"></i> Quản Trị Viên (Admin)
+                    </button>
+                </div>
+                <!-- Chuyển đổi độ phân giải màn hình -->
+                <div class="btn-group btn-group-sm d-none d-lg-inline-flex" role="group">
+                    <button type="button" class="btn btn-outline-info" onclick="setViewport('375')">📱 Mobile (375px)</button>
+                    <button type="button" class="btn btn-outline-info" onclick="setViewport('768')">📟 Tablet (768px)</button>
+                    <button type="button" class="btn btn-info text-dark fw-semibold" onclick="setViewport('full')">🖥️ Desktop (1366px+)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KHUNG HIỂN THỊ WEBSITE CHÍNH -->
+    <div id="viewport-simulator" class="viewport-full d-flex flex-column min-vh-100">
+
+        <!-- Topbar -->
+        <div class="luxury-topbar text-center py-2 px-2">
+            <span class="text-uppercase tracking-widest">
+                MIỄN PHÍ VẬN CHUYỂN VIP & ĐÓNG GÓI HỘP QUÀ HAUTE COUTURE TOÀN QUỐC
+            </span>
+        </div>
+
+        <!-- Master Header Navigation -->
+        <header class="navbar navbar-expand-lg navbar-dark bg-noir border-bottom border-gold">
+            <div class="container">
+                <a class="navbar-brand font-serif fs-2 text-gold tracking-wider" href="javascript:void(0)" onclick="showSection('catalog')">
+                    MAISON AURA
+                </a>
+                <button class="navbar-toggler border-gold" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav mx-auto mb-2 mb-lg-0 text-uppercase small tracking-wider">
+                        <li class="nav-item"><a class="nav-link px-3 text-light" href="javascript:void(0)" onclick="filterByCategory(0)">Bộ Sưu Tập</a></li>
+                        <li class="nav-item"><a class="nav-link px-3 text-light" href="javascript:void(0)" onclick="filterByCategory(1)">Sơ Mi Lụa</a></li>
+                        <li class="nav-item"><a class="nav-link px-3 text-light" href="javascript:void(0)" onclick="filterByCategory(2)">Bespoke Vest</a></li>
+                        <li class="nav-item"><a class="nav-link px-3 text-light" href="javascript:void(0)" onclick="filterByCategory(3)">Đầm Dạ Hội</a></li>
+                        <li class="nav-item"><a class="nav-link px-3 text-light" href="javascript:void(0)" onclick="filterByCategory(4)">Phụ Kiện</a></li>
+                        <li class="nav-item"><a class="nav-link px-3 text-gold fw-semibold" href="javascript:void(0)" onclick="showSection('admin')">
+                            <i class="bi bi-speedometer2"></i> Trang Admin
+                        </a></li>
+                    </ul>
+
+                    <!-- Tài khoản & giỏ hàng -->
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <div id="guest-actions" class="d-flex flex-wrap gap-2">
+                            <button class="btn btn-outline-gold btn-sm text-uppercase tracking-wider" onclick="showSection('login')">
+                                <i class="bi bi-person me-1"></i> Đăng nhập
+                            </button>
+                            <button class="btn btn-gold btn-sm text-uppercase tracking-wider" onclick="showSection('register')">
+                                Đăng ký
+                            </button>
+                        </div>
+                        <div id="signed-in-actions" class="d-none flex-wrap align-items-center gap-2">
+                        <button class="btn btn-outline-gold btn-sm text-uppercase tracking-wider" onclick="showSection('orders')">
+                            <i class="bi bi-clock-history me-1"></i> <span id="current-user-label">Nguyễn Minh Khuê</span>
+                        </button>
+                            <button class="btn btn-outline-gold btn-sm" onclick="logout()" aria-label="Đăng xuất" title="Đăng xuất">
+                                <i class="bi bi-box-arrow-right"></i>
+                            </button>
+                        </div>
+                        <button class="btn btn-gold btn-sm position-relative" onclick="showSection('cart')">
+                            <i class="bi bi-handbag fs-6"></i>
+                            <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark text-gold border border-gold">
+                                0
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Vùng thông báo động (TempData Alert) -->
+        <div class="container mt-3" id="alert-box-container"></div>
+
+        <!-- =========================================================
+             PHÂN HỆ 1: DANH MỤC SẢN PHẨM & BỘ LỌC LINQ (CATALOG VIEW)
+             ========================================================= -->
+        <main id="section-catalog" class="flex-grow-1">
+            <!-- Hero Banner -->
+            <section class="hero-luxury text-center mb-5">
+                <div class="container">
+                    <p class="text-uppercase tracking-widest text-gold small mb-2">Automne - Hiver Haute Couture</p>
+                    <h1 class="font-serif display-4 fw-bold mb-3">NGHỆ THUẬT ĐỊNH HÌNH PHONG CÁCH</h1>
+                    <p class="lead small text-light mx-auto mb-4" style="max-width: 620px;">
+                        Chế tác thủ công từ lụa tơ tằm Mulberry 6A, len Loro Piana và pha lê Áo dành riêng cho giới mộ điệu.
+                    </p>
+                </div>
+            </section>
+
+            <div class="container pb-5">
+                <!-- Thanh công cụ Lọc, Tìm kiếm, Sắp xếp (Mô phỏng LINQ ProductController) -->
+                <div class="bg-white p-4 mb-5 border border-gold shadow-sm">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <label class="form-label small text-uppercase fw-semibold">Tìm kiếm từ khóa</label>
+                            <input type="text" id="filter-keyword" class="form-control rounded-0" placeholder="Nhập tên đầm, vest, túi..." oninput="renderCatalog()" />
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <label class="form-label small text-uppercase fw-semibold">Danh mục (Categories)</label>
+                            <select id="filter-category" class="form-select rounded-0" onchange="renderCatalog()">
+                                <option value="0">-- Tất cả bộ sưu tập --</option>
+                                <option value="1">Áo Sơ Mi Lụa & Couture</option>
+                                <option value="2">Bespoke Vest & Tuxedo</option>
+                                <option value="3">Đầm Dạ Hội Haute Couture</option>
+                                <option value="4">Phụ Kiện Da Thuộc & Trang Sức</option>
+                            </select>
+                        </div>
+                        <div class="col-6 col-md-6 col-lg-3">
+                            <label class="form-label small text-uppercase fw-semibold">Sắp xếp theo giá (LINQ OrderBy)</label>
+                            <select id="filter-sort" class="form-select rounded-0" onchange="renderCatalog()">
+                                <option value="newest">Mới nhất (CreatedAt DESC)</option>
+                                <option value="price_asc">Giá: Thấp đến Cao</option>
+                                <option value="price_desc">Giá: Cao đến Thấp</option>
+                            </select>
+                        </div>
+                        <div class="col-6 col-md-6 col-lg-3 d-grid">
+                            <button class="btn btn-outline-dark rounded-0 text-uppercase small py-2" onclick="resetFilters()">
+                                <i class="bi bi-arrow-counterclockwise"></i> Đặt Lại Bộ Lọc
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lưới sản phẩm Responsive: 1 cột (375px), 2 cột (768px), 4 cột (1366px) -->
+                <div class="row g-4" id="product-grid-container"></div>
+            </div>
+        </main>
+
+        <!-- =========================================================
+             PHÂN HỆ 2: GIỎ HÀNG & THANH TOÁN TRỪ TỒN KHO (B7)
+             ========================================================= -->
+        <section id="section-cart" class="container py-5 flex-grow-1 d-none">
+            <div class="d-flex justify-content-between align-items-center border-bottom border-gold pb-3 mb-4">
+                <h2 class="font-serif fw-bold mb-0">GIỎ HÀNG HAUTE COUTURE</h2>
+                <button class="btn btn-outline-dark btn-sm rounded-0" onclick="showSection('catalog')">
+                    <i class="bi bi-arrow-left me-1"></i> Tiếp tục mua sắm
+                </button>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-12 col-lg-8">
+                    <div class="table-responsive bg-white border p-3">
+                        <table class="table align-middle mb-0">
+                            <thead class="table-dark text-gold small text-uppercase">
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th>Đơn giá</th>
+                                    <th style="width: 130px;">Số lượng</th>
+                                    <th>Thành tiền</th>
+                                    <th>Xóa</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cart-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Form Thanh Toán (Checkout) kèm Validation -->
+                <div class="col-12 col-lg-4">
+                    <div class="bg-noir text-light p-4 border border-gold">
+                        <h4 class="font-serif text-gold border-bottom border-secondary pb-2 mb-3">THÔNG TIN GIAO NHẬN VIP</h4>
+                        <form id="checkout-form" onsubmit="handleCheckout(event)">
+                            <div class="mb-3">
+                                <label class="form-label small text-uppercase text-gold">Người nhận</label>
+                                <input type="text" class="form-control rounded-0 bg-dark text-white border-secondary" value="Nguyễn Minh Khuê" readonly />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small text-uppercase text-gold">Số điện thoại nhận hàng (*)</label>
+                                <input type="text" id="checkout-phone" class="form-control rounded-0" value="0988776655" required />
+                                <div class="form-text text-secondary small">Kiểm tra Regex 10 số Việt Nam.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small text-uppercase text-gold">Địa chỉ giao hàng chi tiết (*)</label>
+                                <textarea id="checkout-address" class="form-control rounded-0" rows="2" required>Biệt thự Vinhomes Golden River, Quận 1, TP.HCM</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small text-uppercase text-gold">Ghi chú đóng gói</label>
+                                <input type="text" id="checkout-note" class="form-control rounded-0" placeholder="Hộp quà lụa, thiệp viết tay..." />
+                            </div>
+                            <hr class="border-secondary" />
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-uppercase small">Tổng thanh toán:</span>
+                                <span class="fs-4 font-serif text-gold fw-bold" id="cart-total-display">0 ₫</span>
+                            </div>
+                            <button type="submit" class="btn btn-gold w-100 py-2 text-uppercase tracking-wider">
+                                <i class="bi bi-check2-circle me-1"></i> Hoàn Tất Đặt Hàng
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             PHÂN HỆ 3: LỊCH SỬ ĐƠN HÀNG CỦA KHÁCH HÀNG (ORDER HISTORY)
+             ========================================================= -->
+        <section id="section-orders" class="container py-5 flex-grow-1 d-none">
+            <h2 class="font-serif fw-bold border-bottom border-gold pb-3 mb-4">LỊCH SỬ ĐƠN HÀNG CỦA QUÝ KHÁCH</h2>
+            <div id="order-history-container"></div>
+        </section>
+
+        <section id="section-login" class="container py-5 flex-grow-1 d-none">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-7 col-lg-5">
+                    <div class="bg-white border border-gold p-4 p-md-5">
+                        <p class="text-uppercase small tracking-wider text-gold mb-2">Chào mừng trở lại</p>
+                        <h2 class="font-serif fw-bold mb-4">ĐĂNG NHẬP</h2>
+                        <form onsubmit="handleLogin(event)">
+                            <div class="mb-3">
+                                <label for="login-email" class="form-label small text-uppercase">Email</label>
+                                <input type="email" id="login-email" class="form-control rounded-0" autocomplete="email" required />
+                            </div>
+                            <div class="mb-4">
+                                <label for="login-password" class="form-label small text-uppercase">Mật khẩu</label>
+                                <input type="password" id="login-password" class="form-control rounded-0" autocomplete="current-password" required />
+                            </div>
+                            <button type="submit" class="btn btn-gold w-100 py-2 text-uppercase tracking-wider">Đăng nhập</button>
+                        </form>
+                        <p class="small text-muted mt-4 mb-0">Chưa có tài khoản? <a href="javascript:void(0)" class="text-gold" onclick="showSection('register')">Đăng ký</a></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="section-register" class="container py-5 flex-grow-1 d-none">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-7 col-lg-5">
+                    <div class="bg-white border border-gold p-4 p-md-5">
+                        <p class="text-uppercase small tracking-wider text-gold mb-2">Trở thành khách hàng Maison Aura</p>
+                        <h2 class="font-serif fw-bold mb-4">TẠO TÀI KHOẢN</h2>
+                        <form onsubmit="handleRegister(event)">
+                            <div class="mb-3">
+                                <label for="register-name" class="form-label small text-uppercase">Họ và tên</label>
+                                <input type="text" id="register-name" class="form-control rounded-0" autocomplete="name" maxlength="80" required />
+                            </div>
+                            <div class="mb-3">
+                                <label for="register-email" class="form-label small text-uppercase">Email</label>
+                                <input type="email" id="register-email" class="form-control rounded-0" autocomplete="email" required />
+                            </div>
+                            <div class="mb-3">
+                                <label for="register-password" class="form-label small text-uppercase">Mật khẩu</label>
+                                <input type="password" id="register-password" class="form-control rounded-0" autocomplete="new-password" minlength="8" required />
+                                <div class="form-text">Mật khẩu cần có ít nhất 8 ký tự.</div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="register-confirm-password" class="form-label small text-uppercase">Xác nhận mật khẩu</label>
+                                <input type="password" id="register-confirm-password" class="form-control rounded-0" autocomplete="new-password" minlength="8" required />
+                            </div>
+                            <button type="submit" class="btn btn-gold w-100 py-2 text-uppercase tracking-wider">Đăng ký</button>
+                        </form>
+                        <p class="small text-muted mt-4 mb-0">Đã có tài khoản? <a href="javascript:void(0)" class="text-gold" onclick="showSection('login')">Đăng nhập</a></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             PHÂN HỆ 4: QUẢN TRỊ VIÊN (ADMIN DASHBOARD & CRUD)
+             ========================================================= -->
+        <section id="section-admin" class="container py-5 flex-grow-1 d-none">
+            <!-- Màn hình chặn 403 Forbidden khi đang ở quyền Customer -->
+            <div id="admin-403-warning" class="bg-white border border-danger p-5 text-center shadow-sm d-none">
+                <i class="bi bi-shield-slash-fill text-danger display-1"></i>
+                <h2 class="font-serif fw-bold text-danger mt-3">HTTP 403 - TỪ CHỐI TRUY CẬP (UNAUTHORIZED)</h2>
+                <p class="text-muted mx-auto" style="max-width: 600px;">
+                    Bộ lọc <code>[CustomAuthorize(AllowedRoles = "Admin")]</code> phía Server đã chặn truy cập của bạn vì biến <code>Session["RoleName"]</code> hiện tại là <strong>Customer</strong>.
+                </p>
+                <button class="btn btn-gold mt-2" onclick="switchRole('Admin')">
+                    <i class="bi bi-key-fill me-1"></i> Chuyển sang quyền Admin trên thanh công cụ để vào Quản trị
+                </button>
+            </div>
+
+            <!-- Nội dung Quản trị khi có quyền Admin -->
+            <div id="admin-dashboard-content">
+                <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom border-gold pb-3 mb-4">
+                    <div>
+                        <span class="badge bg-noir text-gold mb-1">ADMINISTRATION PORTAL</span>
+                        <h2 class="font-serif fw-bold mb-0">BẢNG ĐIỀU KHIỂN & THỐNG KÊ LINQ</h2>
+                    </div>
+                    <button class="btn btn-gold btn-sm" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                        <i class="bi bi-plus-lg me-1"></i> Thêm Tuyệt Tác Mới (CRUD Create)
+                    </button>
+                </div>
+
+                <!-- Thẻ KPI Thống kê Doanh thu (LINQ Sum & Count) -->
+                <div class="row g-3 mb-5">
+                    <div class="col-12 col-md-4">
+                        <div class="bg-noir text-white p-4 border-start border-4 border-gold">
+                            <p class="small text-uppercase text-secondary mb-1">Tổng Doanh Thu (LINQ Sum)</p>
+                            <h3 class="font-serif text-gold fw-bold mb-0" id="admin-kpi-revenue">0 ₫</h3>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <div class="bg-white p-4 border shadow-sm">
+                            <p class="small text-uppercase text-muted mb-1">Tổng Số Đơn Hàng</p>
+                            <h3 class="font-serif fw-bold mb-0" id="admin-kpi-orders">0</h3>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <div class="bg-white p-4 border shadow-sm">
+                            <p class="small text-uppercase text-muted mb-1">Sản Phẩm Đang Kinh Doanh</p>
+                            <h3 class="font-serif fw-bold mb-0" id="admin-kpi-products">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bảng CRUD Sản phẩm (Test Xóa mềm vs Xóa cứng khi có ràng buộc khóa ngoại) -->
+                <h5 class="font-serif fw-bold text-uppercase mb-3">Quản Lý Sản Phẩm & Kiểm Thử Ràng Buộc Khóa Ngoại (B1 - B4)</h5>
+                <div class="table-responsive bg-white border p-3 mb-5">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-dark text-gold small text-uppercase">
+                            <tr>
+                                <th>ID</th>
+                                <th>Ảnh</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Danh mục</th>
+                                <th>Giá bán</th>
+                                <th>Tồn kho</th>
+                                <th>Trạng thái</th>
+                                <th>Ràng buộc FK</th>
+                                <th>Thao tác (Xóa có Confirm)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-product-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-noir text-light pt-4 pb-3 border-top border-gold mt-auto">
+            <div class="container text-center small text-secondary">
+                <p class="text-gold font-serif fs-5 mb-1">MAISON AURA PARIS - SAIGON</p>
+                <p class="mb-0">&copy; 2026 Maison Aura Luxury Fashion. Đồ án Lập trình Web ASP.NET MVC 5 & Entity Framework.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- =========================================================
+         MODAL CHI TIẾT SẢN PHẨM & HIỆU ỨNG KÍNH LÚP ZOOM ẢNH (A5)
+         ========================================================= -->
+    <div class="modal fade" id="productDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content rounded-0 border-gold">
+                <div class="modal-header bg-noir text-gold rounded-0 border-gold">
+                    <h5 class="modal-title font-serif tracking-wider" id="modal-product-title">Chi Tiết Tuyệt Tác</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-4">
+                        <div class="col-12 col-md-6">
+                            <!-- Khung Kính lúp Zoom khi rê chuột -->
+                            <div class="zoom-container mb-2" id="zoom-box">
+                                <img id="modal-main-img" src="" alt="Luxury Product" />
+                            </div>
+                            <p class="text-center text-muted small mb-2">
+                                <i class="bi bi-zoom-in text-gold"></i> Rê chuột lên ảnh để phóng đại chi tiết chất liệu (2.15x)
+                            </p>
+                            <div class="d-flex gap-2 justify-content-center" id="modal-gallery-thumbs"></div>
+                        </div>
+                        <div class="col-12 col-md-6 d-flex flex-column justify-content-between">
+                            <div>
+                                <span class="badge bg-noir text-gold rounded-0 mb-2" id="modal-category"></span>
+                                <h3 class="font-serif fw-bold" id="modal-name"></h3>
+                                <p class="fs-4 text-gold fw-bold my-3" id="modal-price"></p>
+                                <p class="text-muted small lh-lg" id="modal-desc"></p>
+                                <p class="small fw-semibold">Số lượng tồn kho (`StockQuantity`): <span id="modal-stock" class="text-success"></span></p>
+                            </div>
+                            <div class="border-top pt-3">
+                                <button class="btn btn-gold w-100 py-2 text-uppercase tracking-wider" id="modal-add-cart-btn">
+                                    <i class="bi bi-handbag me-2"></i> Thêm Vào Giỏ Hàng
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL THÊM SẢN PHẨM MỚI (ADMIN CREATE) -->
+    <div class="modal fade" id="addProductModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content rounded-0">
+                <form onsubmit="handleAdminCreateProduct(event)">
+                    <div class="modal-header bg-noir text-gold rounded-0">
+                        <h5 class="modal-title font-serif">THÊM TUYỆT TÁC MỚI</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Tên sản phẩm (*)</label>
+                            <input type="text" id="new-prod-name" class="form-control rounded-0" required minlength="5" placeholder="VD: Áo Khoác Cashmere Loro Piana" />
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Danh mục (*)</label>
+                                <select id="new-prod-cat" class="form-select rounded-0">
+                                    <option value="1">Áo Sơ Mi Lụa & Couture</option>
+                                    <option value="2">Bespoke Vest & Tuxedo</option>
+                                    <option value="3">Đầm Dạ Hội Haute Couture</option>
+                                    <option value="4">Phụ Kiện Da Thuộc & Trang Sức</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Tồn kho (*)</label>
+                                <input type="number" id="new-prod-stock" class="form-control rounded-0" value="12" min="1" required />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Giá bán niêm yết (VNĐ) (*)</label>
+                            <input type="number" id="new-prod-price" class="form-control rounded-0" value="28500000" min="100000" step="500000" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Mô tả chất liệu (*)</label>
+                            <textarea id="new-prod-desc" class="form-control rounded-0" rows="2" required>Chế tác thủ công hoàn toàn từ sợi Cashmere thượng hạng vùng Nội Mông.</textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-gold w-100">Lưu Vào Cơ Sở Dữ Liệu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // =========================================================================
+        // DỮ LIỆU MÔ PHỎNG CƠ SỞ DỮ LIỆU LUXURYFASHIONDB (8 BẢNG CHUẨN 3NF)
+        // =========================================================================
+        let currentRole = "Customer";
+        let authUsers = [];
+        let currentUser = null;
+
+        const categories = {
+            1: "Áo Sơ Mi Lụa & Couture",
+            2: "Bespoke Vest & Tuxedo",
+            3: "Đầm Dạ Hội Haute Couture",
+            4: "Phụ Kiện Da Thuộc & Trang Sức"
+        };
+
+        let products = [
+            {
+                id: 1,
+                name: "Áo Sơ Mi Lụa Tơ Tằm Imperial Ivory",
+                categoryId: 1,
+                price: 12500000,
+                discountPrice: 10800000,
+                stock: 15,
+                isActive: true,
+                hasOrderHistory: true, // Đã có trong OrderDetails mẫu
+                image: "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=800&q=80",
+                gallery: [
+                    "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&w=800&q=80"
+                ],
+                desc: "Chế tác từ lụa Mulberry hạng 6A với khuy xà cừ tự nhiên khâu tay tỉ mỉ bởi nghệ nhân Paris."
+            },
+            {
+                id: 2,
+                name: "Bộ Vest Tuxedo Noir Royal Wool",
+                categoryId: 2,
+                price: 48000000,
+                discountPrice: 42500000,
+                stock: 8,
+                isActive: true,
+                hasOrderHistory: true, // Đã có trong OrderDetails mẫu
+                image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=800&q=80",
+                gallery: [
+                    "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=80"
+                ],
+                desc: "Vải len Super 180s nhập khẩu từ Ý, ve áo phủ lụa Satin đen tuyền quyền lực chuẩn Savile Row."
+            },
+            {
+                id: 3,
+                name: "Đầm Dạ Hội L'Éclat D'Or Champagne",
+                categoryId: 3,
+                price: 65000000,
+                discountPrice: null,
+                stock: 5,
+                isActive: true,
+                hasOrderHistory: false, // Chưa có đơn hàng -> Có thể xóa cứng
+                image: "https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=800&q=80",
+                gallery: [
+                    "https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=800&q=80"
+                ],
+                desc: "Đầm đuôi cá đính kết thủ công 300 giờ với chỉ tơ vàng đồng và pha lê Swarovski."
+            },
+            {
+                id: 4,
+                name: "Túi Xách Da Bê Box Calf Sovereign Gold",
+                categoryId: 4,
+                price: 36000000,
+                discountPrice: 32000000,
+                stock: 10,
+                isActive: true,
+                hasOrderHistory: false,
+                image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=800&q=80",
+                gallery: [
+                    "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=800&q=80"
+                ],
+                desc: "Da bê Pháp thuộc thảo mộc kết hợp khóa cài mạ vàng PVD 18K chống xước."
+            }
+        ];
+
+        let cart = [];
+        let orders = [
+            {
+                orderId: 1001,
+                date: "18/10/2026 14:30",
+                status: "Delivered",
+                address: "Biệt thự Vinhomes Golden River, Quận 1, TP.HCM",
+                phone: "0988776655",
+                total: 53300000,
+                items: [
+                    { name: "Áo Sơ Mi Lụa Tơ Tằm Imperial Ivory", qty: 1, price: 10800000 },
+                    { name: "Bộ Vest Tuxedo Noir Royal Wool", qty: 1, price: 42500000 }
+                ]
+            }
+        ];
+
+        function formatVND(amount) {
+            return amount.toLocaleString('vi-VN') + ' ₫';
+        }
+
+        function updateAuthNav() {
+            const isSignedIn = Boolean(currentUser);
+            $("#guest-actions").toggleClass("d-none", isSignedIn);
+            $("#signed-in-actions").toggleClass("d-none", !isSignedIn);
+            if (currentUser) {
+                $("#current-user-label").text(currentUser.name);
+            }
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            const name = $("#register-name").val().trim();
+            const email = $("#register-email").val().trim().toLowerCase();
+            const password = $("#register-password").val();
+            const confirmation = $("#register-confirm-password").val();
+
+            if (password !== confirmation) {
+                showSection('register');
+                showAlert("Mật khẩu xác nhận không khớp.", "danger");
+                return;
+            }
+            if (authUsers.some(user => user.email === email)) {
+                showSection('register');
+                showAlert("Email này đã được đăng ký.", "danger");
+                return;
+            }
+
+            authUsers.push({ name, email, password });
+            event.target.reset();
+            $("#login-email").val(email);
+            showSection('login');
+            showAlert("Đăng ký thành công. Hãy đăng nhập bằng tài khoản vừa tạo.");
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = $("#login-email").val().trim().toLowerCase();
+            const password = $("#login-password").val();
+            const user = authUsers.find(account => account.email === email && account.password === password);
+
+            if (!user) {
+                showSection('login');
+                showAlert("Email hoặc mật khẩu không chính xác.", "danger");
+                return;
+            }
+
+            currentUser = user;
+            event.target.reset();
+            updateAuthNav();
+            showSection('catalog');
+            showAlert(`Xin chào, <strong>${$('<div>').text(user.name).html()}</strong>!`);
+        }
+
+        function logout() {
+            currentUser = null;
+            updateAuthNav();
+            showSection('catalog');
+            showAlert("Bạn đã đăng xuất.");
+        }
+
+        function showAlert(message, type = 'gold') {
+            const alertClass = type === 'danger' ? 'alert-danger' : 'bg-noir text-gold border-gold';
+            const html = `
+                <div class="alert ${alertClass} alert-dismissible fade show rounded-0 shadow-sm" role="alert">
+                    <i class="bi bi-sparkles me-2"></i> ${message}
+                    <button type="button" class="btn-close ${type === 'danger' ? '' : 'btn-close-white'}" data-bs-dismiss="alert"></button>
+                </div>`;
+            $("#alert-box-container").html(html);
+        }
+
+        // 1. RENDER DANH MỤC SẢN PHẨM & BỘ LỌC LINQ
+        function renderCatalog() {
+            const keyword = $("#filter-keyword").val().trim().toLowerCase();
+            const catId = parseInt($("#filter-category").val());
+            const sortOrder = $("#filter-sort").val();
+
+            let filtered = products.filter(p => p.isActive);
+
+            if (catId > 0) {
+                filtered = filtered.filter(p => p.categoryId === catId);
+            }
+            if (keyword) {
+                filtered = filtered.filter(p => p.name.toLowerCase().includes(keyword) || p.desc.toLowerCase().includes(keyword));
+            }
+
+            if (sortOrder === "price_asc") {
+                filtered.sort((a, b) => (a.discountPrice || a.price) - (b.discountPrice || b.price));
+            } else if (sortOrder === "price_desc") {
+                filtered.sort((a, b) => (b.discountPrice || b.price) - (a.discountPrice || a.price));
+            } else {
+                filtered.sort((a, b) => b.id - a.id);
+            }
+
+            const $grid = $("#product-grid-container");
+            $grid.empty();
+
+            if (filtered.length === 0) {
+                $grid.html(`<div class="col-12 text-center py-5"><p class="fs-5 font-serif text-muted">Không tìm thấy tuyệt tác phù hợp.</p></div>`);
+                return;
+            }
+
+            filtered.forEach(p => {
+                const effectivePrice = p.discountPrice || p.price;
+                const priceHtml = p.discountPrice
+                    ? `<span class="text-muted text-decoration-line-through small me-2">${formatVND(p.price)}</span>
+                       <span class="text-gold fw-bold">${formatVND(p.discountPrice)}</span>`
+                    : `<span class="text-dark fw-bold">${formatVND(p.price)}</span>`;
+
+                $grid.append(`
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+                        <div class="luxury-product-card">
+                            <div class="product-img-wrapper" onclick="openProductModal(${p.id})">
+                                <img src="${p.image}" alt="${p.name}" />
+                                ${p.discountPrice ? '<span class="position-absolute top-0 start-0 bg-noir text-gold px-2 py-1 m-2 small text-uppercase">Private Sale</span>' : ''}
+                                <span class="position-absolute bottom-0 end-0 bg-dark text-white px-2 py-1 m-2 small opacity-75">
+                                    <i class="bi bi-zoom-in"></i> Xem & Zoom
+                                </span>
+                            </div>
+                            <div class="card-body d-flex flex-column justify-content-between p-3 text-center">
+                                <div>
+                                    <p class="text-muted small text-uppercase mb-1">${categories[p.categoryId]}</p>
+                                    <h5 class="font-serif fw-bold mb-2" style="cursor:pointer" onclick="openProductModal(${p.id})">${p.name}</h5>
+                                </div>
+                                <div class="mt-2">
+                                    <div>${priceHtml}</div>
+                                    <p class="small text-muted mb-2 mt-1">Tồn kho: <strong>${p.stock}</strong></p>
+                                    <button class="btn btn-gold btn-sm w-100 text-uppercase tracking-wider" 
+                                            onclick="addToCart(${p.id})" ${p.stock <= 0 ? 'disabled' : ''}>
+                                        ${p.stock > 0 ? '<i class="bi bi-bag-plus me-1"></i> Thêm Vào Giỏ' : 'Tạm Hết Hàng'}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            });
+        }
+
+        function filterByCategory(catId) {
+            showSection('catalog');
+            $("#filter-category").val(catId);
+            renderCatalog();
+        }
+
+        function resetFilters() {
+            $("#filter-keyword").val("");
+            $("#filter-category").val("0");
+            $("#filter-sort").val("newest");
+            renderCatalog();
+        }
+
+        // 2. MODAL CHI TIẾT & HIỆU ỨNG KÍNH LÚP ZOOM ẢNH (A5)
+        function openProductModal(id) {
+            const p = products.find(x => x.id === id);
+            if (!p) return;
+
+            $("#modal-name").text(p.name);
+            $("#modal-category").text(categories[p.categoryId]);
+            $("#modal-price").text(formatVND(p.discountPrice || p.price));
+            $("#modal-desc").text(p.desc);
+            $("#modal-stock").text(p.stock + " sản phẩm sẵn sàng");
+            $("#modal-main-img").attr("src", p.image);
+
+            const $thumbs = $("#modal-gallery-thumbs").empty();
+            p.gallery.forEach(imgUrl => {
+                $thumbs.append(`
+                    <img src="${imgUrl}" style="width: 60px; height: 75px; object-fit: cover; cursor: pointer;" 
+                         class="border border-gold p-1" onclick="$('#modal-main-img').attr('src', '${imgUrl}')" />
+                `);
+            });
+
+            $("#modal-add-cart-btn").off("click").on("click", function () {
+                addToCart(p.id);
+                bootstrap.Modal.getInstance(document.getElementById('productDetailModal')).hide();
+            });
+
+            new bootstrap.Modal(document.getElementById('productDetailModal')).show();
+        }
+
+        // Sự kiện Kính lúp Zoom ảnh khi di chuột
+        $("#zoom-box").on("mousemove", function (e) {
+            const offset = $(this).offset();
+            const relX = ((e.pageX - offset.left) / $(this).outerWidth()) * 100;
+            const relY = ((e.pageY - offset.top) / $(this).outerHeight()) * 100;
+            $("#modal-main-img").css({
+                "transform-origin": `${relX}% ${relY}%`,
+                "transform": "scale(2.15)"
+            });
+        }).on("mouseleave", function () {
+            $("#modal-main-img").css({ "transform": "scale(1)", "transform-origin": "center center" });
+        });
+
+        // 3. NGHIỆP VỤ GIỎ HÀNG & THANH TOÁN TRỪ TỒN KHO (B7)
+        function addToCart(productId) {
+            const p = products.find(x => x.id === productId);
+            if (!p || p.stock <= 0) return;
+
+            const item = cart.find(c => c.productId === productId);
+            if (item) {
+                if (item.qty + 1 > p.stock) {
+                    showAlert(`Kho chỉ còn tối đa ${p.stock} sản phẩm cho tuyệt tác này!`, 'danger');
+                    return;
+                }
+                item.qty++;
+            } else {
+                cart.push({
+                    productId: p.id,
+                    name: p.name,
+                    image: p.image,
+                    price: p.discountPrice || p.price,
+                    qty: 1
+                });
+            }
+            updateCartUI();
+            showAlert(`Đã thêm <strong>${p.name}</strong> vào giỏ hàng Luxury.`);
+        }
+
+        function updateCartUI() {
+            const totalQty = cart.reduce((sum, i) => sum + i.qty, 0);
+            $("#cart-badge").text(totalQty);
+
+            const $tbody = $("#cart-table-body").empty();
+            let totalAmount = 0;
+
+            if (cart.length === 0) {
+                $tbody.html(`<tr><td colspan="5" class="text-center py-4 text-muted">Giỏ hàng của Quý khách đang trống.</td></tr>`);
+            } else {
+                cart.forEach(item => {
+                    const sub = item.price * item.qty;
+                    totalAmount += sub;
+                    $tbody.append(`
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <img src="${item.image}" style="width: 50px; height: 65px; object-fit: cover;" />
+                                    <span class="fw-semibold small">${item.name}</span>
+                                </div>
+                            </td>
+                            <td class="small">${formatVND(item.price)}</td>
+                            <td>
+                                <input type="number" class="form-control form-control-sm rounded-0 text-center" 
+                                       value="${item.qty}" min="1" onchange="changeCartQty(${item.productId}, this.value)" />
+                            </td>
+                            <td class="fw-bold text-gold">${formatVND(sub)}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-danger rounded-0" onclick="removeFromCart(${item.productId})">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `);
+                });
+            }
+            $("#cart-total-display").text(formatVND(totalAmount));
+        }
+
+        function changeCartQty(productId, newQty) {
+            const p = products.find(x => x.id === productId);
+            const item = cart.find(c => c.productId === productId);
+            newQty = parseInt(newQty);
+            if (newQty <= 0) {
+                removeFromCart(productId);
+                return;
+            }
+            if (newQty > p.stock) {
+                alert(`Tồn kho hiện tại chỉ còn ${p.stock} sản phẩm!`);
+                updateCartUI();
+                return;
+            }
+            item.qty = newQty;
+            updateCartUI();
+        }
+
+        function removeFromCart(productId) {
+            const item = cart.find(c => c.productId === productId);
+            if (item && window.confirm(`XÁC NHẬN HỆ THỐNG MAISON AURA:\nBạn có chắc chắn muốn xóa [${item.name}] khỏi giỏ hàng không?`)) {
+                cart = cart.filter(c => c.productId !== productId);
+                updateCartUI();
+            }
+        }
+
+        function handleCheckout(e) {
+            e.preventDefault();
+            if (cart.length === 0) {
+                showAlert("Giỏ hàng trống, không thể thanh toán!", "danger");
+                return;
+            }
+
+            const phone = $("#checkout-phone").val().trim();
+            const address = $("#checkout-address").val().trim();
+            const phoneRegex = /^(0|\+84)[0-9]{9,10}$/;
+
+            if (!phoneRegex.test(phone)) {
+                alert("Số điện thoại người nhận không hợp lệ (Phải gồm 10 chữ số chuẩn Việt Nam)!");
+                return;
+            }
+
+            // Transaction: Tự động trừ tồn kho StockQuantity & đánh dấu sản phẩm đã có đơn hàng (FK)
+            let orderTotal = 0;
+            const orderItems = [];
+
+            for (let c of cart) {
+                const prod = products.find(p => p.id === c.productId);
+                prod.stock -= c.qty;
+                prod.hasOrderHistory = true; // Kích hoạt cờ khóa ngoại OrderDetails
+                orderTotal += c.price * c.qty;
+                orderItems.push({ name: c.name, qty: c.qty, price: c.price });
+            }
+
+            const newOrderId = 1000 + orders.length + 1;
+            orders.unshift({
+                orderId: newOrderId,
+                date: new Date().toLocaleString('vi-VN'),
+                status: "Pending",
+                address: address,
+                phone: phone,
+                total: orderTotal,
+                items: orderItems
+            });
+
+            cart = [];
+            updateCartUI();
+            renderCatalog();
+            renderOrders();
+            showSection('orders');
+            showAlert(`Đặt hàng thành công! Mã đơn hàng VIP <strong>#${newOrderId}</strong> đã được lưu và tự động trừ tồn kho.`);
+        }
+
+        // 4. LỊCH SỬ ĐƠN HÀNG
+        function renderOrders() {
+            const $container = $("#order-history-container").empty();
+            orders.forEach(o => {
+                const itemsHtml = o.items.map(i => `<li>${i.name} (x${i.qty}) - <strong>${formatVND(i.price * i.qty)}</strong></li>`).join('');
+                $container.append(`
+                    <div class="bg-white border border-gold p-4 mb-3 shadow-sm">
+                        <div class="d-flex flex-wrap justify-content-between border-bottom pb-2 mb-3">
+                            <div>
+                                <span class="fw-bold font-serif fs-5">Đơn hàng #${o.orderId}</span>
+                                <span class="text-muted small ms-2">(${o.date})</span>
+                            </div>
+                            <span class="badge ${o.status === 'Delivered' ? 'bg-success' : 'bg-warning text-dark'} rounded-0 px-3 py-2">
+                                ${o.status}
+                            </span>
+                        </div>
+                        <p class="small mb-2"><i class="bi bi-geo-alt text-gold me-1"></i> <strong>Giao đến:</strong> ${o.address} - SĐT: ${o.phone}</p>
+                        <ul class="small text-muted mb-2">${itemsHtml}</ul>
+                        <div class="text-end fw-bold text-gold fs-5">Tổng cộng: ${formatVND(o.total)}</div>
+                    </div>
+                `);
+            });
+        }
+
+        // 5. QUẢN TRỊ VIÊN (ADMIN) & XỬ LÝ KHÓA NGOẠI KHI XÓA SẢN PHẨM (B1-B6)
+        function switchRole(role) {
+            currentRole = role;
+            $("#role-customer-btn").toggleClass("active", role === "Customer");
+            $("#role-admin-btn").toggleClass("active", role === "Admin");
+            if (currentUser) {
+                $("#current-user-label").text(role === "Admin" ? "Giám Đốc Sáng Tạo (Admin)" : currentUser.name);
+            }
+            renderAdmin();
+            showAlert(`Đã chuyển phiên làm việc (Session["RoleName"]) sang quyền: <strong>${role}</strong>.`);
+        }
+
+        function renderAdmin() {
+            if (currentRole !== "Admin") {
+                $("#admin-403-warning").removeClass("d-none");
+                $("#admin-dashboard-content").addClass("d-none");
+                return;
+            }
+            $("#admin-403-warning").addClass("d-none");
+            $("#admin-dashboard-content").removeClass("d-none");
+
+            const totalRev = orders.reduce((s, o) => s + o.total, 0);
+            $("#admin-kpi-revenue").text(formatVND(totalRev));
+            $("#admin-kpi-orders").text(orders.length);
+            $("#admin-kpi-products").text(products.filter(p => p.isActive).length);
+
+            const $tbody = $("#admin-product-tbody").empty();
+            products.forEach(p => {
+                $tbody.append(`
+                    <tr class="${!p.isActive ? 'table-secondary text-muted' : ''}">
+                        <td>#${p.id}</td>
+                        <td><img src="${p.image}" style="width: 42px; height: 55px; object-fit: cover;" /></td>
+                        <td class="fw-semibold">${p.name}</td>
+                        <td class="small">${categories[p.categoryId]}</td>
+                        <td class="text-gold fw-bold">${formatVND(p.discountPrice || p.price)}</td>
+                        <td>${p.stock}</td>
+                        <td>
+                            <span class="badge ${p.isActive ? 'bg-success' : 'bg-secondary'} rounded-0">
+                                ${p.isActive ? 'Đang bán' : 'Ngừng KD (Xóa mềm)'}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge ${p.hasOrderHistory ? 'bg-info text-dark' : 'bg-light text-dark border'}">
+                                ${p.hasOrderHistory ? 'Đã có đơn hàng (FK)' : 'Chưa có đơn'}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-danger rounded-0" onclick="adminDeleteProduct(${p.id})">
+                                <i class="bi bi-trash"></i> Xóa
+                            </button>
+                        </td>
+                    </tr>
+                `);
+            });
+        }
+
+        function adminDeleteProduct(id) {
+            const p = products.find(x => x.id === id);
+            if (!p) return;
+
+            if (!window.confirm(`XÁC NHẬN HỆ THỐNG MAISON AURA:\nBạn có chắc chắn muốn xóa sản phẩm [${p.name}] không?`)) {
+                return;
+            }
+
+            if (p.hasOrderHistory) {
+                // XÓA MỀM (SOFT DELETE) như trong AdminProductController.cs
+                p.isActive = false;
+                p.stock = 0;
+                showAlert(`Sản phẩm <strong>[${p.name}]</strong> đã phát sinh đơn hàng trong bảng <code>OrderDetails</code> nên Hệ thống tự động chuyển sang <strong>Xóa Mềm (Ngừng kinh doanh)</strong> để bảo toàn lịch sử tài chính và không gây lỗi khóa ngoại SQL!`);
+            } else {
+                // XÓA CỨNG (HARD DELETE)
+                products = products.filter(x => x.id !== id);
+                showAlert(`Sản phẩm <strong>[${p.name}]</strong> chưa có ràng buộc đơn hàng nên đã được <strong>Xóa Cứng (Hard Delete)</strong> khỏi Cơ sở dữ liệu.`);
+            }
+            renderAdmin();
+            renderCatalog();
+        }
+
+        function handleAdminCreateProduct(e) {
+            e.preventDefault();
+            const newProd = {
+                id: products.length ? Math.max(...products.map(p => p.id)) + 1 : 1,
+                name: $("#new-prod-name").val().trim(),
+                categoryId: parseInt($("#new-prod-cat").val()),
+                price: parseFloat($("#new-prod-price").val()),
+                discountPrice: null,
+                stock: parseInt($("#new-prod-stock").val()),
+                isActive: true,
+                hasOrderHistory: false,
+                image: "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=800&q=80",
+                gallery: ["https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=800&q=80"],
+                desc: $("#new-prod-desc").val().trim()
+            };
+            products.unshift(newProd);
+            bootstrap.Modal.getInstance(document.getElementById('addProductModal')).hide();
+            renderAdmin();
+            renderCatalog();
+            showAlert(`Đã thêm tuyệt tác mới <strong>[${newProd.name}]</strong> thành công!`);
+        }
+
+        // Điều hướng giữa các màn hình
+        function showSection(name) {
+            $("#section-catalog, #section-cart, #section-orders, #section-login, #section-register, #section-admin").addClass("d-none");
+            $(`#section-${name}`).removeClass("d-none");
+            if (name === 'admin') renderAdmin();
+            if (name === 'orders') renderOrders();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function setViewport(size) {
+            const $sim = $("#viewport-simulator");
+            $sim.removeClass("viewport-375 viewport-768 viewport-full");
+            $sim.addClass(`viewport-${size}`);
+        }
+
+        // Khởi chạy ban đầu
+        $(document).ready(function () {
+            updateAuthNav();
+            renderCatalog();
+            updateCartUI();
+            renderOrders();
+        });
+    </script>
+</body>
+</html>
