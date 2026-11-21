@@ -1,0 +1,451 @@
+USE [master]
+GO
+/****** Object:  Database [LuxuryFashionDB]    Script Date: 11/21/2026 11:01:10 AM ******/
+CREATE DATABASE [LuxuryFashionDB]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'LuxuryFashionDB', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.SQLEXPRESS\MSSQL\DATA\LuxuryFashionDB.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'LuxuryFashionDB_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.SQLEXPRESS\MSSQL\DATA\LuxuryFashionDB_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF
+GO
+ALTER DATABASE [LuxuryFashionDB] SET COMPATIBILITY_LEVEL = 160
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [LuxuryFashionDB].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [LuxuryFashionDB] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET AUTO_CLOSE ON 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET  ENABLE_BROKER 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET RECOVERY SIMPLE 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET  MULTI_USER 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [LuxuryFashionDB] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET DELAYED_DURABILITY = DISABLED 
+GO
+ALTER DATABASE [LuxuryFashionDB] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+GO
+ALTER DATABASE [LuxuryFashionDB] SET QUERY_STORE = ON
+GO
+ALTER DATABASE [LuxuryFashionDB] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 30), DATA_FLUSH_INTERVAL_SECONDS = 900, INTERVAL_LENGTH_MINUTES = 60, MAX_STORAGE_SIZE_MB = 1000, QUERY_CAPTURE_MODE = AUTO, SIZE_BASED_CLEANUP_MODE = AUTO, MAX_PLANS_PER_QUERY = 200, WAIT_STATS_CAPTURE_MODE = ON)
+GO
+USE [LuxuryFashionDB]
+GO
+/****** Object:  Table [dbo].[Categories]    Script Date: 11/21/2026 11:01:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Categories](
+	[CategoryID] [int] IDENTITY(1,1) NOT NULL,
+	[CategoryName] [nvarchar](100) NOT NULL,
+	[Description] [nvarchar](500) NULL,
+ CONSTRAINT [PK_Categories] PRIMARY KEY CLUSTERED 
+(
+	[CategoryID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[OrderDetails]    Script Date: 11/21/2026 11:01:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[OrderDetails](
+	[OrderDetailID] [int] IDENTITY(1,1) NOT NULL,
+	[OrderID] [int] NOT NULL,
+	[ProductID] [int] NOT NULL,
+	[Quantity] [int] NOT NULL,
+	[UnitPrice] [decimal](18, 2) NOT NULL,
+ CONSTRAINT [PK_OrderDetails] PRIMARY KEY CLUSTERED 
+(
+	[OrderDetailID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Orders]    Script Date: 11/21/2026 11:01:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Orders](
+	[OrderID] [int] IDENTITY(1,1) NOT NULL,
+	[UserID] [int] NOT NULL,
+	[OrderDate] [datetime] NOT NULL,
+	[TotalAmount] [decimal](18, 2) NOT NULL,
+	[Status] [nvarchar](50) NOT NULL,
+	[ShippingAddress] [nvarchar](300) NOT NULL,
+	[ReceiverPhone] [varchar](20) NOT NULL,
+	[Note] [nvarchar](500) NULL,
+ CONSTRAINT [PK_Orders] PRIMARY KEY CLUSTERED 
+(
+	[OrderID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[ProductImages]    Script Date: 11/21/2026 11:01:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ProductImages](
+	[ImageID] [int] IDENTITY(1,1) NOT NULL,
+	[ProductID] [int] NOT NULL,
+	[ImageURL] [nvarchar](500) NOT NULL,
+ CONSTRAINT [PK_ProductImages] PRIMARY KEY CLUSTERED 
+(
+	[ImageID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Products]    Script Date: 11/21/2026 11:01:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Products](
+	[ProductID] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](200) NOT NULL,
+	[Slug] [varchar](220) NOT NULL,
+	[Price] [decimal](18, 2) NOT NULL,
+	[DiscountPrice] [decimal](18, 2) NULL,
+	[Description] [nvarchar](max) NULL,
+	[StockQuantity] [int] NOT NULL,
+	[ImageURL] [nvarchar](500) NOT NULL,
+	[CategoryID] [int] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedAt] [datetime] NOT NULL,
+ CONSTRAINT [PK_Products] PRIMARY KEY CLUSTERED 
+(
+	[ProductID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Reviews]    Script Date: 11/21/2026 11:01:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Reviews](
+	[ReviewID] [int] IDENTITY(1,1) NOT NULL,
+	[ProductID] [int] NOT NULL,
+	[UserID] [int] NOT NULL,
+	[Rating] [int] NOT NULL,
+	[Comment] [nvarchar](1000) NOT NULL,
+	[CreatedAt] [datetime] NOT NULL,
+ CONSTRAINT [PK_Reviews] PRIMARY KEY CLUSTERED 
+(
+	[ReviewID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Roles]    Script Date: 11/21/2026 11:01:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Roles](
+	[RoleID] [int] IDENTITY(1,1) NOT NULL,
+	[RoleName] [nvarchar](50) NOT NULL,
+ CONSTRAINT [PK_Roles] PRIMARY KEY CLUSTERED 
+(
+	[RoleID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Users]    Script Date: 11/21/2026 11:01:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Users](
+	[UserID] [int] IDENTITY(1,1) NOT NULL,
+	[Username] [varchar](50) NOT NULL,
+	[PasswordHash] [varchar](256) NOT NULL,
+	[FullName] [nvarchar](100) NOT NULL,
+	[Email] [varchar](100) NOT NULL,
+	[Phone] [varchar](20) NOT NULL,
+	[RoleID] [int] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedAt] [datetime] NOT NULL,
+ CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED 
+(
+	[UserID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET IDENTITY_INSERT [dbo].[Categories] ON 
+
+INSERT [dbo].[Categories] ([CategoryID], [CategoryName], [Description]) VALUES (1, N'Áo Sơ Mi Lụa & Couture', N'Tuyệt tác sơ mi lụa tơ tằm Mulberry 100% và organza dệt thủ công.')
+INSERT [dbo].[Categories] ([CategoryID], [CategoryName], [Description]) VALUES (2, N'Bespoke Vest & Tuxedo', N'Âu phục may đo chuẩn Savile Row từ len Loro Piana và Cashmere nguyên bản.')
+INSERT [dbo].[Categories] ([CategoryID], [CategoryName], [Description]) VALUES (3, N'Đầm Dạ Hội Haute Couture', N'Thiết kế dạ tiệc độc bản đính pha lê Swarovski và ren Pháp Chantilly.')
+INSERT [dbo].[Categories] ([CategoryID], [CategoryName], [Description]) VALUES (4, N'Phụ Kiện Da Thuộc & Trang Sức', N'Túi xách da cá sấu bạch tạng, khăn lụa Twill và cài áo mạ vàng 24K.')
+SET IDENTITY_INSERT [dbo].[Categories] OFF
+GO
+SET IDENTITY_INSERT [dbo].[OrderDetails] ON 
+
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (1, 1, 1, 1, CAST(10800000.00 AS Decimal(18, 2)))
+INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ProductID], [Quantity], [UnitPrice]) VALUES (2, 1, 2, 1, CAST(42500000.00 AS Decimal(18, 2)))
+SET IDENTITY_INSERT [dbo].[OrderDetails] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Orders] ON 
+
+INSERT [dbo].[Orders] ([OrderID], [UserID], [OrderDate], [TotalAmount], [Status], [ShippingAddress], [ReceiverPhone], [Note]) VALUES (1, 2, CAST(N'2026-11-18T08:03:52.760' AS DateTime), CAST(53300000.00 AS Decimal(18, 2)), N'Delivered', N'Biệt thự Vinhomes Golden River, Quận 1, TP.HCM', N'0988776655', N'Giao trong khung giờ hành chính, đóng gói hộp quà Luxury.')
+SET IDENTITY_INSERT [dbo].[Orders] OFF
+GO
+SET IDENTITY_INSERT [dbo].[ProductImages] ON 
+
+INSERT [dbo].[ProductImages] ([ImageID], [ProductID], [ImageURL]) VALUES (1, 1, N'/Content/Images/Products/silk-shirt-ivory-detail-1.jpg')
+INSERT [dbo].[ProductImages] ([ImageID], [ProductID], [ImageURL]) VALUES (2, 1, N'/Content/Images/Products/silk-shirt-ivory-detail-2.jpg')
+INSERT [dbo].[ProductImages] ([ImageID], [ProductID], [ImageURL]) VALUES (3, 2, N'/Content/Images/Products/tuxedo-noir-detail-1.jpg')
+INSERT [dbo].[ProductImages] ([ImageID], [ProductID], [ImageURL]) VALUES (4, 3, N'/Content/Images/Products/gown-champagne-detail-1.jpg')
+SET IDENTITY_INSERT [dbo].[ProductImages] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Products] ON 
+
+INSERT [dbo].[Products] ([ProductID], [Name], [Slug], [Price], [DiscountPrice], [Description], [StockQuantity], [ImageURL], [CategoryID], [IsActive], [CreatedAt]) VALUES (1, N'Áo Sơ Mi Lụa Tơ Tằm Imperial Ivory', N'ao-so-mi-lua-to-tam-imperial-ivory', CAST(12500000.00 AS Decimal(18, 2)), CAST(10800000.00 AS Decimal(18, 2)), N'Chế tác từ lụa Mulberry hạng 6A với khuy xà cừ tự nhiên khâu tay tỉ mỉ.', 15, N'/Content/Images/Products/silk-shirt-ivory-1.jpg', 1, 1, CAST(N'2026-11-21T08:03:52.757' AS DateTime))
+INSERT [dbo].[Products] ([ProductID], [Name], [Slug], [Price], [DiscountPrice], [Description], [StockQuantity], [ImageURL], [CategoryID], [IsActive], [CreatedAt]) VALUES (2, N'Bộ Vest Tuxedo Noir Royal Wool', N'bo-vest-tuxedo-noir-royal-wool', CAST(48000000.00 AS Decimal(18, 2)), CAST(42500000.00 AS Decimal(18, 2)), N'Vải len Super 180s nhập khẩu từ Ý, ve áo phủ lụa Satin đen tuyền quyền lực.', 8, N'/Content/Images/Products/tuxedo-noir-1.jpg', 2, 1, CAST(N'2026-11-21T08:03:52.757' AS DateTime))
+INSERT [dbo].[Products] ([ProductID], [Name], [Slug], [Price], [DiscountPrice], [Description], [StockQuantity], [ImageURL], [CategoryID], [IsActive], [CreatedAt]) VALUES (3, N'Đầm Dạ Hội L''Éclat D''Or Champagne', N'dam-da-hoi-leclat-dor-champagne', CAST(65000000.00 AS Decimal(18, 2)), NULL, N'Đầm đuôi cá đính kết thủ công 300 giờ với chỉ tơ vàng đồng và pha lê Áo.', 5, N'/Content/Images/Products/gown-champagne-1.jpg', 3, 1, CAST(N'2026-11-21T08:03:52.757' AS DateTime))
+INSERT [dbo].[Products] ([ProductID], [Name], [Slug], [Price], [DiscountPrice], [Description], [StockQuantity], [ImageURL], [CategoryID], [IsActive], [CreatedAt]) VALUES (4, N'Túi Xách Da Bê Box Calf Sovereign Gold', N'tui-xach-da-be-box-calf-sovereign-gold', CAST(36000000.00 AS Decimal(18, 2)), CAST(32000000.00 AS Decimal(18, 2)), N'Da bê Pháp thuộc thảo mộc kết hợp khóa cài mạ vàng PVD 18K chống xước.', 10, N'/Content/Images/Products/bag-sovereign-1.jpg', 4, 1, CAST(N'2026-11-21T08:03:52.757' AS DateTime))
+SET IDENTITY_INSERT [dbo].[Products] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Reviews] ON 
+
+INSERT [dbo].[Reviews] ([ReviewID], [ProductID], [UserID], [Rating], [Comment], [CreatedAt]) VALUES (1, 1, 2, 5, N'Chất liệu lụa mềm mượt tuyệt đối, đường cắt may tinh xảo xứng tầm thương hiệu cao cấp.', CAST(N'2026-11-21T08:03:52.760' AS DateTime))
+SET IDENTITY_INSERT [dbo].[Reviews] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Roles] ON 
+
+INSERT [dbo].[Roles] ([RoleID], [RoleName]) VALUES (1, N'Admin')
+INSERT [dbo].[Roles] ([RoleID], [RoleName]) VALUES (2, N'Customer')
+SET IDENTITY_INSERT [dbo].[Roles] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Users] ON 
+
+INSERT [dbo].[Users] ([UserID], [Username], [PasswordHash], [FullName], [Email], [Phone], [RoleID], [IsActive], [CreatedAt]) VALUES (1, N'admin', N'e86f78a8a3caf0b60d8e74e5942aa6d86dc150cd3c03338aef25b7d2d7e3acc7', N'Giám Đốc Sáng Tạo Maison Aura', N'admin@maisonaura.vn', N'0901234567', 1, 1, CAST(N'2026-11-21T08:03:52.753' AS DateTime))
+INSERT [dbo].[Users] ([UserID], [Username], [PasswordHash], [FullName], [Email], [Phone], [RoleID], [IsActive], [CreatedAt]) VALUES (2, N'khachhang_vip', N'3b612c75a7b5048a435fb6ec81e52ff92d6d795a8b5a9c17070f6a63c97a53b2', N'Nguyễn Minh Khuê', N'minhkhue@luxuryclient.vn', N'0988776655', 2, 1, CAST(N'2026-11-21T08:03:52.753' AS DateTime))
+SET IDENTITY_INSERT [dbo].[Users] OFF
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ_Categories_CategoryName]    Script Date: 11/21/2026 11:01:10 AM ******/
+ALTER TABLE [dbo].[Categories] ADD  CONSTRAINT [UQ_Categories_CategoryName] UNIQUE NONCLUSTERED 
+(
+	[CategoryName] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+/****** Object:  Index [UQ_OrderDetails_Order_Product]    Script Date: 11/21/2026 11:01:10 AM ******/
+ALTER TABLE [dbo].[OrderDetails] ADD  CONSTRAINT [UQ_OrderDetails_Order_Product] UNIQUE NONCLUSTERED 
+(
+	[OrderID] ASC,
+	[ProductID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_OrderDetails_ProductID]    Script Date: 11/21/2026 11:01:10 AM ******/
+CREATE NONCLUSTERED INDEX [IX_OrderDetails_ProductID] ON [dbo].[OrderDetails]
+(
+	[ProductID] ASC
+)
+INCLUDE([Quantity],[UnitPrice]) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_Orders_UserID_OrderDate]    Script Date: 11/21/2026 11:01:10 AM ******/
+CREATE NONCLUSTERED INDEX [IX_Orders_UserID_OrderDate] ON [dbo].[Orders]
+(
+	[UserID] ASC,
+	[OrderDate] DESC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ_Products_Slug]    Script Date: 11/21/2026 11:01:10 AM ******/
+ALTER TABLE [dbo].[Products] ADD  CONSTRAINT [UQ_Products_Slug] UNIQUE NONCLUSTERED 
+(
+	[Slug] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_Products_Category_Price]    Script Date: 11/21/2026 11:01:10 AM ******/
+CREATE NONCLUSTERED INDEX [IX_Products_Category_Price] ON [dbo].[Products]
+(
+	[CategoryID] ASC,
+	[Price] ASC
+)
+INCLUDE([Name],[Slug],[DiscountPrice],[ImageURL],[StockQuantity],[IsActive]) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ_Roles_RoleName]    Script Date: 11/21/2026 11:01:10 AM ******/
+ALTER TABLE [dbo].[Roles] ADD  CONSTRAINT [UQ_Roles_RoleName] UNIQUE NONCLUSTERED 
+(
+	[RoleName] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ_Users_Email]    Script Date: 11/21/2026 11:01:10 AM ******/
+ALTER TABLE [dbo].[Users] ADD  CONSTRAINT [UQ_Users_Email] UNIQUE NONCLUSTERED 
+(
+	[Email] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ_Users_Username]    Script Date: 11/21/2026 11:01:10 AM ******/
+ALTER TABLE [dbo].[Users] ADD  CONSTRAINT [UQ_Users_Username] UNIQUE NONCLUSTERED 
+(
+	[Username] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[Orders] ADD  CONSTRAINT [DF_Orders_OrderDate]  DEFAULT (getdate()) FOR [OrderDate]
+GO
+ALTER TABLE [dbo].[Orders] ADD  CONSTRAINT [DF_Orders_Status]  DEFAULT (N'Pending') FOR [Status]
+GO
+ALTER TABLE [dbo].[Products] ADD  CONSTRAINT [DF_Products_Stock]  DEFAULT ((0)) FOR [StockQuantity]
+GO
+ALTER TABLE [dbo].[Products] ADD  CONSTRAINT [DF_Products_IsActive]  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [dbo].[Products] ADD  CONSTRAINT [DF_Products_CreatedAt]  DEFAULT (getdate()) FOR [CreatedAt]
+GO
+ALTER TABLE [dbo].[Reviews] ADD  CONSTRAINT [DF_Reviews_CreatedAt]  DEFAULT (getdate()) FOR [CreatedAt]
+GO
+ALTER TABLE [dbo].[Users] ADD  CONSTRAINT [DF_Users_IsActive]  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [dbo].[Users] ADD  CONSTRAINT [DF_Users_CreatedAt]  DEFAULT (getdate()) FOR [CreatedAt]
+GO
+ALTER TABLE [dbo].[OrderDetails]  WITH CHECK ADD  CONSTRAINT [FK_OrderDetails_Orders] FOREIGN KEY([OrderID])
+REFERENCES [dbo].[Orders] ([OrderID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[OrderDetails] CHECK CONSTRAINT [FK_OrderDetails_Orders]
+GO
+ALTER TABLE [dbo].[OrderDetails]  WITH CHECK ADD  CONSTRAINT [FK_OrderDetails_Products] FOREIGN KEY([ProductID])
+REFERENCES [dbo].[Products] ([ProductID])
+ON UPDATE CASCADE
+GO
+ALTER TABLE [dbo].[OrderDetails] CHECK CONSTRAINT [FK_OrderDetails_Products]
+GO
+ALTER TABLE [dbo].[Orders]  WITH CHECK ADD  CONSTRAINT [FK_Orders_Users] FOREIGN KEY([UserID])
+REFERENCES [dbo].[Users] ([UserID])
+ON UPDATE CASCADE
+GO
+ALTER TABLE [dbo].[Orders] CHECK CONSTRAINT [FK_Orders_Users]
+GO
+ALTER TABLE [dbo].[ProductImages]  WITH CHECK ADD  CONSTRAINT [FK_ProductImages_Products] FOREIGN KEY([ProductID])
+REFERENCES [dbo].[Products] ([ProductID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[ProductImages] CHECK CONSTRAINT [FK_ProductImages_Products]
+GO
+ALTER TABLE [dbo].[Products]  WITH CHECK ADD  CONSTRAINT [FK_Products_Categories] FOREIGN KEY([CategoryID])
+REFERENCES [dbo].[Categories] ([CategoryID])
+ON UPDATE CASCADE
+GO
+ALTER TABLE [dbo].[Products] CHECK CONSTRAINT [FK_Products_Categories]
+GO
+ALTER TABLE [dbo].[Reviews]  WITH CHECK ADD  CONSTRAINT [FK_Reviews_Products] FOREIGN KEY([ProductID])
+REFERENCES [dbo].[Products] ([ProductID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[Reviews] CHECK CONSTRAINT [FK_Reviews_Products]
+GO
+ALTER TABLE [dbo].[Reviews]  WITH CHECK ADD  CONSTRAINT [FK_Reviews_Users] FOREIGN KEY([UserID])
+REFERENCES [dbo].[Users] ([UserID])
+ON UPDATE CASCADE
+GO
+ALTER TABLE [dbo].[Reviews] CHECK CONSTRAINT [FK_Reviews_Users]
+GO
+ALTER TABLE [dbo].[Users]  WITH CHECK ADD  CONSTRAINT [FK_Users_Roles] FOREIGN KEY([RoleID])
+REFERENCES [dbo].[Roles] ([RoleID])
+ON UPDATE CASCADE
+GO
+ALTER TABLE [dbo].[Users] CHECK CONSTRAINT [FK_Users_Roles]
+GO
+ALTER TABLE [dbo].[OrderDetails]  WITH CHECK ADD  CONSTRAINT [CK_OrderDetails_Quantity] CHECK  (([Quantity]>(0)))
+GO
+ALTER TABLE [dbo].[OrderDetails] CHECK CONSTRAINT [CK_OrderDetails_Quantity]
+GO
+ALTER TABLE [dbo].[OrderDetails]  WITH CHECK ADD  CONSTRAINT [CK_OrderDetails_UnitPrice] CHECK  (([UnitPrice]>=(0)))
+GO
+ALTER TABLE [dbo].[OrderDetails] CHECK CONSTRAINT [CK_OrderDetails_UnitPrice]
+GO
+ALTER TABLE [dbo].[Orders]  WITH CHECK ADD  CONSTRAINT [CK_Orders_Status] CHECK  (([Status]=N'Cancelled' OR [Status]=N'Delivered' OR [Status]=N'Shipped' OR [Status]=N'Processing' OR [Status]=N'Pending'))
+GO
+ALTER TABLE [dbo].[Orders] CHECK CONSTRAINT [CK_Orders_Status]
+GO
+ALTER TABLE [dbo].[Orders]  WITH CHECK ADD  CONSTRAINT [CK_Orders_TotalAmount] CHECK  (([TotalAmount]>=(0)))
+GO
+ALTER TABLE [dbo].[Orders] CHECK CONSTRAINT [CK_Orders_TotalAmount]
+GO
+ALTER TABLE [dbo].[Products]  WITH CHECK ADD  CONSTRAINT [CK_Products_DiscountPrice] CHECK  (([DiscountPrice] IS NULL OR [DiscountPrice]>(0) AND [DiscountPrice]<[Price]))
+GO
+ALTER TABLE [dbo].[Products] CHECK CONSTRAINT [CK_Products_DiscountPrice]
+GO
+ALTER TABLE [dbo].[Products]  WITH CHECK ADD  CONSTRAINT [CK_Products_Price] CHECK  (([Price]>(0)))
+GO
+ALTER TABLE [dbo].[Products] CHECK CONSTRAINT [CK_Products_Price]
+GO
+ALTER TABLE [dbo].[Products]  WITH CHECK ADD  CONSTRAINT [CK_Products_StockQuantity] CHECK  (([StockQuantity]>=(0)))
+GO
+ALTER TABLE [dbo].[Products] CHECK CONSTRAINT [CK_Products_StockQuantity]
+GO
+ALTER TABLE [dbo].[Reviews]  WITH CHECK ADD  CONSTRAINT [CK_Reviews_Rating] CHECK  (([Rating]>=(1) AND [Rating]<=(5)))
+GO
+ALTER TABLE [dbo].[Reviews] CHECK CONSTRAINT [CK_Reviews_Rating]
+GO
+USE [master]
+GO
+ALTER DATABASE [LuxuryFashionDB] SET  READ_WRITE 
+GO
